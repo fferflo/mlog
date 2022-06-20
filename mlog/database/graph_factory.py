@@ -3,23 +3,11 @@ import dash_html_components as html
 import inspect, traceback, urllib, os
 
 import numpy as np
-import skimage.measure
-def mean_pool(array, axis=0, kernel_size=None, output_num=None):
-    if kernel_size is None:
-        kernel_size = (array.shape[axis] + output_num - 1) // output_num
-    elif output_num is None:
-        output_num = (array.shape[axis] + kernel_size - 1) // kernel_size
-    if kernel_size != 1:
+import skimage.measure, scipy.ndimage
+def mean_pool(array, axis=0, sigma=0):
+    if sigma > 0:
         array = array.astype("float32")
-        if array.shape[axis] <= kernel_size:
-            array = np.mean(array, axis=axis, keepdims=True)
-        else:
-            indices = np.linspace(0.0, float(array.shape[axis] - 1), num=(array.shape[axis] + kernel_size - 1) // kernel_size * kernel_size).astype("int32")
-            array = np.take(array, indices, axis=axis)
-
-            block_size = [1] * len(array.shape)
-            block_size[axis] = kernel_size
-            array = skimage.measure.block_reduce(array, block_size=tuple(block_size), func=np.mean)
+        array = scipy.ndimage.gaussian_filter1d(array, sigma=sigma, axis=axis)
     return array
 
 class GraphFactory:
