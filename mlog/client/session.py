@@ -20,6 +20,10 @@ class Node:
                 self.dict[key] = Node(self.session)
             return self.dict[key]
 
+    def __contains__(self, key):
+        with self.lock:
+            return key in self.dict
+
     def overwrite(self, key, value):
         with self.lock:
             self.dict[key] = value
