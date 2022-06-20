@@ -189,6 +189,8 @@ def register(app, database):
                         node = node[key]
                     else:
                         return empty
+                if isinstance(node, dict):
+                    node = str(node)
                 return node
             filtered_key_lists = []
             for key_list in key_lists:
@@ -213,7 +215,7 @@ def register(app, database):
             max_len = max([len(key_list) for key_list in diff_key_lists])
             def make_len(key_list):
                 if len(key_list) < max_len:
-                    key_list = [""] * (max_len - len(key_list)) + list(key_list)
+                    key_list = list(key_list) + [""] * (max_len - len(key_list))
                 return key_list
             key_lists_for_columns = [make_len(key_list) for key_list in diff_key_lists]
             diff_columns = [{"name": [str(k) for k in key_list] if multiple_header_rows else str(key), "id": key} for key, key_list in zip(keys, key_lists_for_columns)]
