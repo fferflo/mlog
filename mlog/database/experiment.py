@@ -27,8 +27,14 @@ class Experiment:
             elif isinstance(node, dict):
                 if "mlog-type" in node:
                     if node["mlog-type"] == "mapping":
-                        node["xs"] = np.load(os.path.join(self.path, node["xs"]))
-                        node["ys"] = np.load(os.path.join(self.path, node["ys"]))
+                        try:
+                            node["xs"] = np.load(os.path.join(self.path, node["xs"]))
+                        except Exception as e:
+                            del node["xs"] # TODO: logging window in browser
+                        try:
+                            node["ys"] = np.load(os.path.join(self.path, node["ys"]))
+                        except Exception as e:
+                            del node["ys"]
                     else:
                         print("Invalid mlog-type")
                         sys.exit(-1) # TODO: handling
